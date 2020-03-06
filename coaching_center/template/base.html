@@ -1,0 +1,146 @@
+ {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <title>www.jeemed.com</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-sm sticky-top navbar-dark bg-dark p-2">
+    <div class="container-fluid">
+      <a href="/" class="navbar-brand">JEEMED</a>
+      <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav">
+          <li class="nav-item px-2">
+            <a href="/" class="nav-link active">Dashboard</a>
+          </li>
+          {% if user.is_accepted %}
+          {% if user.is_superuser %}
+          <li class="nav-item px-2">
+            <a href="{% url 'teachers' user.id %}" class="nav-link">Teacher</a>
+          </li>
+          <li class="nav-item px-2">
+            <a href="{% url 'students' user.id %}" class="nav-link">Student</a>
+          </li>
+          {% endif %}
+          <li class="nav-item px-2">
+            <a href="{% url 'batch' user.id %}" class="nav-link">Batch</a>
+          </li>
+          <li class="nav-item px-2">
+            <a href="{% url 'fees' user.id %}" class="nav-link">Fees</a>
+          </li>
+          {% if user.is_superuser %}
+          <li class="nav-item px-2">
+            <a href="{% url 'salary' user.id %}" class="nav-link">Salary</a>
+          </li>
+          {% endif %}
+          <li class="nav-item px-2">
+            <a href="{% url 'notification' user.id %}" class="nav-link">Notification</a>
+          </li>
+          <li class="nav-item px-2">
+            <a href="{% url 'tests' user.id %}" class="nav-link">Test</a>
+          </li>
+          <li class="nav-item px-2">
+            <a href="{% url 'result' user.id %}" class="nav-link">Result</a>
+          </li>
+          <li class="nav-item px-2">
+            <a href="{% url 'assignment' user.id %}" class="nav-link">Assignment</a>
+          </li>
+          {% if user.is_superuser %}
+          <li class="nav-item px-2">
+            <a href="{% url 'take_attendence' user.id %}" class="nav-link">Attendence</a>
+          </li>
+          {% elif user.is_staff %}
+          <li class="nav-item dropdown mr-3">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+               Attendence
+            </a>
+            <div class="dropdown-menu">
+              <a href="{% url 'take_attendence' user.id %}" class="dropdown-item">
+                Take Attendence
+              </a>
+              <a href="{% url 'attendence'  %}" class="dropdown-item">
+               Your Attendence
+              </a>
+            </div>
+          </li>
+          {% else %}
+          <li class="nav-item px-2">
+            <a href="{% url 'attendence'  %}" class="nav-link">Your Attendence</a>
+          </li>
+          {% endif %}
+          {% endif %}
+        </ul>
+             
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item dropdown mr-3">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+              <i class="fas fa-user"></i> Welcome {{user.first_name}}
+            </a>
+            <div class="dropdown-menu">
+              <a href="{% url 'profile' user.id %}" class="dropdown-item">
+                <i class="fas fa-user-circle"></i> Profile
+              </a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link">
+              <i class="fas fa-user-times"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+   {% if user.is_accepted %}
+  {% block content %}
+  {% endblock content %}
+    {% else %}
+
+    <div class="display-1">Welcome,{{user.first_name}}. </div> 
+    <h1 class="h1">You are not confirm as a member of our institue.Please wait until our admin accept your registeration</h1>
+        {% endif %}
+  <!-- FOOTER -->
+  <footer id="main-footer" class="bg-dark text-white mt-5 p-5">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <p class="lead text-center">
+            Copyright &copy;
+            <span id="year"></span>
+            JEEMED
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
+
+  <script>
+    // Get the current year for the copyright
+    $('#year').text(new Date().getFullYear());
+  </script>
+</body>
+
+</html>

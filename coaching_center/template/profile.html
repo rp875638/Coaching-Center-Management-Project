@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+ {% block content %}
+{% load static %}
+ <!-- HEADER -->
+  <header id="main-header" class="py-2 bg-primary text-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h1>
+            <i class="fas fa-user"></i> Edit Profile</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ACTIONS -->
+  <section id="actions" class="py-4 mb-4 bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <a href="/" class="btn btn-light btn-block">
+            <i class="fas fa-arrow-left"></i> Back To Dashboard
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a href="#addCategoryModal" class="btn btn-success btn-block" data-toggle="modal">
+            <i class="fas fa-lock"></i> Change Password
+          </a>
+        </div>
+        {% if not user.is_superuser %}
+        <div class="col-md-3">
+          <a href="#addUserModal" class="btn btn-danger btn-block" data-toggle="modal">
+            <i class="fas fa-trash"></i> Delete Account
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="profile">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9">
+          <div class="card">
+            <div class="card-header">
+              <h4>Edit Profile</h4>
+            </div>
+            <div class="card-body">
+              <form method="post" action="{% url 'save' user.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="name">First Name</label>
+                  <input type="text" name="first_name" class="form-control" value="{{detail.first_name}}">
+                </div>
+                <div class="form-group">
+                  <label for="name">Last Name</label>
+                  <input type="text" name="last_name" class="form-control" value="{{detail.last_name}}">
+                </div>
+                <div class="form-group">
+                  <label for="name">Username</label>
+                  <input type="text" name="username" class="form-control" value="{{detail.username}}">
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" name="email" class="form-control" value="{{detail.email}}">
+                </div>
+                <div class="form-group">
+                  <label for="contact">Contact</label>
+                  <input type="text" name="contact" class="form-control" value="{{detail.contact}}">
+                </div>
+                <div class="form-group">
+                  <label for="dob">DOB</label>
+                  <input type="date" name="dob" class="form-control" value="{{ detail.dob|date:"Y-m-d" }}">  
+                </div>
+                {% if not user.is_superuser %}
+                <div class="form-group">
+                  <label for="subject1">Subject1</label>
+                <select name="subject1" id="type" class="custom-select">
+                <option>Select any</option>
+                <option value="Physics" {% if detail.subject1 == 'Physics' or detail.subject == 'Physics' %} selected{% endif %}>Physics</option>
+                <option value="Chemistry" {% if detail.subject1 == 'Chemistry' or detail.subject == 'Chemistry' %} selected{% endif %}>Chemistry</option>
+                <option value="Math" {% if detail.subject1 == 'Math' or detail.subject == 'Math' %} selected{% endif %}>Math</option>
+                <option value="Bio" {% if detail.subject1 == 'Bio' or detail.subject == 'Bio' %} selected{% endif %}>Bio</option>
+            </select>
+             </div>
+             {% if not user.is_staff and not user.is_superuser %}
+            <div class="form-group">
+                  <label for="subject2">Subject2</label>
+                <select name="subject2" id="type" class="custom-select">
+                <option >Select any</option>
+                <option value="Physics" {% if detail.subject2 == 'Physics' %} selected{% endif %}>Physics</option>
+                <option value="Chemistry" {% if detail.subject2 == 'Chemistry' %} selected{% endif %}>Chemistry</option>
+                <option value="Math" {% if detail.subject2 == 'Math' %} selected{% endif %}>Math</option>
+                <option value="Bio" {% if detail.subject2 == 'Bio' %} selected{% endif %}>Bio</option>
+            </select>
+             </div>
+            <div class="form-group">
+                  <label for="subject3">Subject3</label>
+                <select name="subject3" id="type" class="custom-select">
+                <option>Select any</option>
+                <option value="Physics" {% if detail.subject3 == 'Physics' %} selected{% endif %}>Physics</option>
+                <option value="Chemistry" {% if detail.subject3 == 'Chemistry' %} selected{% endif %}>Chemistry</option>
+                <option value="Math" {% if detail.subject3 == 'Math' %} selected{% endif %}>Math</option>
+                <option value="Bio" {% if detail.subject3 == 'Bio' %} selected{% endif %}>Bio</option>
+            </select>
+             </div>
+             <div class="form-group">
+                  <label for="subject3">Type</label>
+             <select name="type" class="custom-select">
+                <option>Select any</option>
+                <option value="JEE" {% if detail.type == 'JEE' %} selected{% endif %}>JEE</option>
+                <option value="MED" {% if detail.type == 'MED' %} selected{% endif %}>MED</option>
+            </select>
+            </div>
+            {% endif %}
+            {% endif %}
+                <input class="btn btn-primary" type="submit" value="Save">
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <h3>Your Picture</h3>
+          <img src="{% static 'img/avatar.png' %}" alt="" class="d-block img-fluid mb-3"></img>
+          <button class="btn btn-primary btn-block">Edit Image</button>
+          <button class="btn btn-danger btn-block">Delete Image</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- MODALS -->
+  <!-- ADD CATEGORY MODAL -->
+  {% if user.id %}
+  <div class="modal fade" id="addCategoryModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">Change Password</h5>
+          <button class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <form method="post" action="{% url 'changepassword' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+            <div class="form-group">
+              <label for="password">New Password</label>
+              <input type="password" name ="password" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="confirm_password">Confirm New Password</label>
+              <input type="password" name ="confirm_password" class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-success" value="Save Password">
+            <button class="btn btn-danger" data-dismiss="modal">Cancle</button>
+
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endif %}
+  <!-- ADD USER MODAL -->
+  <div class="modal fade" id="addUserModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Warning</h5>
+          <button class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <form>
+        <div class="modal-body">
+          
+            <p>Do you want to delete your account</p>
+          
+        </div>
+        <div class="modal-footer">
+          <input class="btn btn-danger" type="submit" value="Delete Account">
+          <button class="btn btn-danger" data-dismiss="modal">Cancle</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+ {% endblock content %}

@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+  <!-- HEADER -->
+  <header id="main-header" class="py-2 bg-primary text-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h1>
+            Details {{i}} </h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ACTIONS -->
+  <section id="actions" class="py-4 mb-4 bg-light">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <a href="index" class="btn btn-light btn-block">
+            <i class="fas fa-arrow-left"></i> Back To Dashboard
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a href="/" class="btn btn-success btn-block">
+            <i class="fas fa-check"></i> Save Changes
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a href="/" class="btn btn-danger btn-block">
+            <i class="fas fa-trash"></i> Delete User {{i}}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DETAILS -->
+  <section id="profile">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9">
+          <div class="card">
+            <div class="card-header">
+              <h4>Edit Profile</h4>
+            </div>
+            <div class="card-body">
+              <form method="post" action="{% url 'save' user.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="name">First Name</label>
+                  <input type="text" name="first_name" class="form-control" value="{{detail.first_name}}">
+                </div>
+                <div class="form-group">
+                  <label for="name">Last Name</label>
+                  <input type="text" name="last_name" class="form-control" value="{{detail.last_name}}">
+                </div>
+                <div class="form-group">
+                  <label for="name">Username</label>
+                  <input type="text" name="username" class="form-control" value="{{detail.username}}">
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" name="email" class="form-control" value="{{detail.email}}">
+                </div>
+                <div class="form-group">
+                  <label for="contact">Contact</label>
+                  <input type="text" name="contact" class="form-control" value="{{detail.contact}}">
+                </div>
+                <div class="form-group">
+                  <label for="dob">DOB</label>
+                  <input type="date" name="dob" class="form-control" value="{{ detail.dob|date:"Y-m-d" }}">  
+                </div>
+                <div class="form-group">
+                  <label for="subject1">Subject1</label>
+                <select name="subject1" id="type" class="custom-select">
+                <option>Select any</option>
+                <option value="Physics" {% if detail.subject1 == 'Physics' or detail.subject == 'Physics' %} selected{% endif %}>Physics</option>
+                <option value="Chemistry" {% if detail.subject1 == 'Chemistry' or detail.subject == 'Chemistry' %} selected{% endif %}>Chemistry</option>
+                <option value="Math" {% if detail.subject1 == 'Math' or detail.subject == 'Math' %} selected{% endif %}>Math</option>
+                <option value="Bio" {% if detail.subject1 == 'Bio' or detail.subject == 'Bio' %} selected{% endif %}>Bio</option>
+            </select>
+             </div>
+             {% if not detail.idteacher %}
+            <div class="form-group">
+                  <label for="subject2">Subject2</label>
+                <select name="subject2" id="type" class="custom-select">
+                <option >Select any</option>
+                <option value="Physics" {% if detail.subject2 == 'Physics' %} selected{% endif %}>Physics</option>
+                <option value="Chemistry" {% if detail.subject2 == 'Chemistry' %} selected{% endif %}>Chemistry</option>
+                <option value="Math" {% if detail.subject2 == 'Math' %} selected{% endif %}>Math</option>
+                <option value="Bio" {% if detail.subject2 == 'Bio' %} selected{% endif %}>Bio</option>
+            </select>
+             </div>
+            <div class="form-group">
+                  <label for="subject3">Subject3</label>
+                <select name="subject3" id="type" class="custom-select">
+                <option>Select any</option>
+                <option value="Physics" {% if detail.subject3 == 'Physics' %} selected{% endif %}>Physics</option>
+                <option value="Chemistry" {% if detail.subject3 == 'Chemistry' %} selected{% endif %}>Chemistry</option>
+                <option value="Math" {% if detail.subject3 == 'Math' %} selected{% endif %}>Math</option>
+                <option value="Bio" {% if detail.subject3 == 'Bio' %} selected{% endif %}>Bio</option>
+            </select>
+             </div>
+             <div class="form-group">
+                  <label for="subject3">Subject3</label>
+             <select name="type" class="custom-select">
+                <option>Select any</option>
+                <option value="JEE" {% if detail.type == 'JEE' %} selected{% endif %}>JEE</option>
+                <option value="MED" {% if detail.type == 'MED' %} selected{% endif %}>MED</option>
+            </select>
+            </div>
+            {% endif %}
+                <input class="btn btn-primary" type="submit" value="Save">
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <h3>Your Picture</h3>
+          <img src="{% static 'img/avatar.png' %}" alt="" class="d-block img-fluid mb-3"></img>
+          <button class="btn btn-primary btn-block">Edit Image</button>
+          <button class="btn btn-danger btn-block">Delete Image</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADD POST MODAL -->
+  <div class="modal fade" id="addPostModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Add Post</h5>
+          <button class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="title">Title</label>
+              <input type="text" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="category">Category</label>
+              <select class="form-control">
+                <option value="">Web Development</option>
+                <option value="">Tech Gadgets</option>
+                <option value="">Business</option>
+                <option value="">Health & Wellness</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="image">Upload Image</label>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="image">
+                <label for="image" class="custom-file-label">Choose File</label>
+              </div>
+              <small class="form-text text-muted">Max Size 3mb</small>
+            </div>
+            <div class="form-group">
+              <label for="body">Body</label>
+              <textarea name="editor1" class="form-control"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-dismiss="modal">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD CATEGORY MODAL -->
+  <div class="modal fade" id="addCategoryModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">Add Category</h5>
+          <button class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="title">Title</label>
+              <input type="text" class="form-control">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" data-dismiss="modal">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD USER MODAL -->
+  <div class="modal fade" id="addUserModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-white">
+          <h5 class="modal-title">Add User</h5>
+          <button class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="password2">Confirm Password</label>
+              <input type="password" class="form-control">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-warning" data-dismiss="modal">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+{% endblock content %}

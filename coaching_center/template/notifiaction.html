@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <!-- HEADER -->
+  <header id="main-header" class="py-2 bg-primary text-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h1>
+            <i class="fas fa-pencil-alt"></i> {{name}}</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SEARCH -->
+  <section id="search" class="py-4 mb-4 bg-light">
+    <div class="container">
+      <div class="row">
+      {% if user.is_superuser %}
+      <div class="col-md-4">
+          <a href="#" class="btn btn-primary btn-block" data-toggle="modal" data-target="#addUserModal">
+            <i class="fas fa-plus"></i> Add {{name}}
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- POSTS -->
+  <section id="posts">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+          {% if details %}
+            <div class="card-header">
+              <h4>Latest {{name}}</h4>
+            </div>
+            <table class="table table-responsive-md table-striped">
+              <thead class="thead-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Notification</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for data in details %}
+              <tr>
+              <td>{{forloop.counter}}</td>
+              <td> {{ data.notifications }} </td>
+              <td> {{data.dates}}</td>
+              {% if user.is_superuser %}
+              <td>
+                    <a href="{% url 'delete_notification' "all" data.idnotifications %}" class="btn btn-danger">
+                      Delete
+                    </a>
+                  </td>
+                  {% endif %}
+              </tr>
+              {% endfor %}
+                
+              </tbody>
+            </table>
+            {% endif %}
+
+            {% if tdetails and user.is_staff or user.is_superuser %}
+            <div class="card-header">
+              <h4>Latest Teacher {{name}}</h4>
+            </div>
+            <table class="table table-responsive-md table-striped">
+              <thead class="thead-dark">
+                <tr>
+                {% for i in heading %}
+               <th> {{ i }}</th>
+                {% endfor %}
+                </tr>
+                <tr>
+
+                  <th>#</th>
+                  <th>Notification</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for data in tdetails %}
+              <tr>
+              <td>{{forloop.counter}}</td>
+              <td> {{ data.notify }} </td>
+              <td> {{data.ndate}}</td>
+              {% if user.is_superuser %}
+              <td>
+                    <a href="{% url 'delete_notification' "teacher" data.idnotification %}" class="btn btn-danger">
+                      Delete
+                    </a>
+                  </td>
+                  {% endif %}
+              </tr>
+              {% endfor %}
+                
+              </tbody>
+            </table>
+            {% endif %}
+            {% if sdetails and not user.is_staff %}
+            <div class="card-header">
+              <h4>Latest Student {{name}}</h4>
+            </div>
+            <table class="table table-responsive-md table-striped">
+              <thead class="thead-dark">
+                <tr>
+                {% for i in heading %}
+               <th> {{ i }}</th>
+                {% endfor %}
+                </tr>
+                <tr>
+
+                  <th>#</th>
+                  <th>Notification</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for data in sdetails %}
+              <tr>
+              <td>{{forloop.counter}}</td>
+              <td> {{ data.notify }} </td>
+              <td> {{data.ndate}}</td>
+              {% if user.is_superuser %}
+              <td>
+                    <a href="{% url 'delete_notification' "student" data.idnotification %}" class="btn btn-danger">
+                      Delete
+                    </a>
+                  </td>
+                  {% endif %}
+              </tr>
+              {% endfor %}  
+              </tbody>
+            </table>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% if user.is_superuser %}
+   <div class="modal fade" id="addUserModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Add {{name}}</h5>
+          <button class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <form method="post" action="{% url 'add_notification' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+            <div class="form-group">
+            <select name="types" id="type" class="custom-select">
+                <option selected>Select any</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Student">Student</option>
+                <option value="Everyone">Everyone</option>
+            </select>
+              <label for="name">Notification</label>
+              <input type="text" name="notify" class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-primary" value="Add Notification">
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% endblock content %}
+
